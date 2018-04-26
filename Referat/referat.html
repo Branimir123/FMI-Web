@@ -1,0 +1,472 @@
+<!DOCTYPE html>
+<html lang="en">
+   <head>
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+      <meta name="description" content="">
+      <meta name="author" content="">
+      <title>CORS</title>
+      <!-- Bootstrap core CSS -->
+      <link href="vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+      <link href="https://fonts.googleapis.com/css?family=Saira+Extra+Condensed:100,200,300,400,500,600,700,800,900" rel="stylesheet">
+      <link href="https://fonts.googleapis.com/css?family=Open+Sans:300,300i,400,400i,600,600i,700,700i,800,800i" rel="stylesheet">
+      <!-- Custom styles for this template -->
+      <link href="css/style.css" rel="stylesheet">
+      <link href="css/highlight.css" rel="stylesheet">
+   </head>
+   <body id="page-top">
+      <!-- HEY THERE! 
+        TODO: Add more examples and fix the links for used info - for example 
+        adding it right below the image that is used. 
+      -->
+      <nav class="navbar navbar-expand-lg navbar-dark bg-primary fixed-top" id="sideNav">
+         <a class="navbar-brand js-scroll-trigger" href="#page-top">
+            <span class="d-block d-lg-none">CORS</span>
+            <span class="d-none d-lg-block">
+               <div class="sidebar-title">CORS</div>
+            </span>
+         </a>
+         <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+         <span class="navbar-toggler-icon"></span>
+         </button>
+         <div class="collapse navbar-collapse" id="navbarSupportedContent">
+            <ul class="navbar-nav">
+               <li class="nav-item">
+                  <a class="nav-link js-scroll-trigger" href="#about">Въведение</a>
+               </li>
+               <li class="nav-item">
+                  <a class="nav-link js-scroll-trigger" href="#cors">Какво е CORS?</a>
+               </li>
+               <li class="nav-item">
+                  <a class="nav-link js-scroll-trigger" href="#tech">Технически поглед</a>
+               </li>
+               <li class="sub-item">
+                  <a class="nav-link js-scroll-trigger" href="#headers">Headers</a>
+               </li>
+               <li class="sub-item">
+                  <a class="nav-link js-scroll-trigger" href="#requests">Requests (заявки)</a>
+               </li>
+               <li class="nav-item">
+                  <a class="nav-link js-scroll-trigger" href="#low-level-api">Примери</a>
+               </li>
+               <li class="nav-item">
+                  <a class="nav-link js-scroll-trigger" href="#server">CORS на сървър</a>
+               </li>
+               <li class="nav-item">
+                  <a class="nav-link js-scroll-trigger" href="#summary">Обобщение</a>
+               </li>
+               <li class="nav-item">
+                  <a class="nav-link js-scroll-trigger" href="#outputs">Източници</a>
+               </li>
+            </ul>
+         </div>
+      </nav>
+      <div class="container-fluid p-0">
+         <section class="resume-section p-3 p-lg-5 d-flex d-column" id="about">
+            <div class="my-auto">
+               <h1 class="mb-0">CO
+                  <span class="text-primary">RS</span>
+               </h1>
+               <div class="subheading mb-5"> CROSS ORIGIN REQUEST SHARING </div>
+               <p class="mb-5">Cross-Origin Resource Sharing (CORS) е W3C спецификация която позволява комуникация между различни домейни от даден браузер. Надграждайки над XMLHttpRequest обектът, CORS позволява на разработчиците да работят по същия начин както и с заявки към същия домейн.</p>
+            </div>
+         </section>
+         <section class="resume-section p-3 p-lg-5 d-flex flex-column" id="cors">
+            <div class="my-auto">
+               <h2 class="mb-5">Какво е CORS?</h2>
+               <div class="resume-item d-flex flex-column flex-md-row mb-5">
+                  <div class="resume-content mr-auto">
+                     <div class="subheading mb-3">По - просто обяснение</div>
+                     <p>
+                        Cross Origin Resource Sharing (CORS) ни позволява да използваме уеб приложенията в браузерите, когато домейните не са еднакви. Например,
+                        уеб сайт с домейн learning.org иска да достъпи чрез AJAX заявка друг ресурс от друг домейн mydomain.org използвайки HTTP протокола.
+                     </p>
+                     <p>
+                        Използването на CORS не винаги е толкова просто особено когато става въпрос за намиране на бъгове с него. CORS може да доведе до използването на още
+                        една заявка (OPTIONS) и не винаги съобщенията за грешки са достатъчно ясни. Повечето пъти проблемите идват от неизползването на нужните header-и в отговора на завката
+                        към даден сървър. Поради тези и много други причини за всеки разработчик е нужно да знае как да използва CORS правилно.
+                     </p>
+                     <p>
+                        В днешни дни изпозлването на ресурси от друг домейн е много често срещано. Използването на архитектури, които отделят клиентския от сървърния код на различни
+                        домейни налагат това. 
+                     </p>
+                     <p>
+                        CORS механизмът се имплементира предимно на сървърната част на приложението, но неправилната му работа там (липсващи header-и) води до неправилна работа
+                        на клиентското приложение - грешки и ресурси, които са нужни но не могат да бъдат достъпени, заради политиката на браузерите.
+                     </p>
+                  </div>
+               </div>
+            </div>
+         </section>
+         <section class="resume-section p-3 p-lg-5 d-flex flex-column" id="tech">
+            <div class="my-auto">
+               <h2 class="mb-5">Технически поглед</h2>
+               <div class="resume-item d-flex flex-column flex-md-row mb-5">
+                  <div class="resume-content mr-auto">
+                     <p>
+                        С CORS, сървърната част на приложението <code>mydomain.org</code> избира ако дадена заявка ще получи отговор.
+                        Спецификацията отделя два различни случая:
+                     </p>
+                     <p>
+                     <ul>
+                        <li>
+                           <strong>Simple requests (прости заявки)</strong>
+                           <p>Този сценарий е валиден ако използваме методите <code>GET, HEAD, POST</code> от <code>HTTP</code> протокола. Ако е използван <code>POST</code>,
+                              само съдържание <code> (Content-type)</code> в следните формати е поддържан <code>text/plain, application/x-www-form-urlencoded and multipart/form-data.</code>
+                           </p>
+                        </li>
+                        <li>
+                           <strong>Preflighted Requests (изпращане на заявка OPTIONS преди същинската заявка)</strong>
+                           <p>
+                              Когато горните заявки не могат да бъдат изпълнени, първо се изпраща OPTION заявка, която проверява какво може да бъде
+                              направено в контекста на cross-domain ресурсите.
+                           </p>
+                           <p>
+                              Когато заявка е направена с <code>Authentication</code> header, тя автоматично се превръща в preflighted такава.
+                           </p>
+                        </li>
+                     </ul>
+                     </p>              
+                  </div>
+               </div>
+            </div>
+         </section>
+         <section class="resume-section p-3 p-lg-5 d-flex flex-column" id="headers">
+            <h3 class="mb-5">Headers</h3>
+            <div class="resume-item d-flex flex-column flex-md-row mb-5">
+               <div class="resume-content mr-auto">
+                  <p>
+                     Клиентското приложение и сървъра си разменят пакет от header-и, за да уточнят как да протече размяната на ресурси от различни домейни. Ето и примери за тях:                       
+                  </p>
+                  <p>
+                  <ul class="headers-list">
+                     <li class="headers-list-item">
+                        <code class="headers-item">Origin: </code>
+                        <p class="headers-description">
+                           този header е използван от клиента и той показва какъв е домейна от който е изпълнена заявката. Сървърът от своя страна решава дали да оторизира или не CORS заявката
+                        </p>
+                     </li>
+                     <li class="headers-list-item">
+                        <code class="headers-item">Access-Control-Request-Method</code>
+                        <p class="headers-description">
+                           в контекста на preflighted заявка, OPTION (първата заявка) изпраща този header за да провери дали определен HTTP метод е позволен при CORS (например <code>POST</code>)
+                        </p>
+                     </li>
+                     <li class="headers-list-item">
+                        <code class="headers-item" class="headers-item">Access-Control-Request-Headers</code>
+                        <p class="headers-description">
+                           в контекста на preflighted заявка, OPTION (първата заявка) изпраща този header за да провери header-и за позволени за искания метод при CORS
+                        </p>
+                     </li>
+                     <li class="headers-list-item">
+                        <code class="headers-item">Access-Control-Allow-Credentials</code>
+                        <p class="headers-description">
+                           този header показва дали credentials (удостоверение за самоличност)
+                        </p>
+                     </li>
+                     <li class="headers-list-item">
+                        <code class="headers-item">Access-Control-Allow-Methods</code>
+                        <p class="headers-description">
+                           сървърът използва този header за да покаже кои header-и са оторизирани по време на заявката - обикновено се използва при <code>OPTIONS</code> заявките
+                        </p>
+                     </li>
+                     <li class="headers-list-item">
+                        <code class="headers-item" class="headers-item">Access-Control-Allow-Origin</code>
+                        <p class="headers-description">
+                           използва се от сървъра за да покаже кои домейни са оторизирани да направят заявката
+                        </p>
+                     </li>
+                     <li class="headers-list-item">
+                        <code class="headers-item">Access-Control-Allow-Headers</code>
+                        <p class="headers-description">
+                           сървъра използва този header за да покаже кои request header-и могат да се използват - обикновено се използва при <code>OPTIONS</code> заявките
+                        </p>
+                     </li>
+                  </ul>
+                  </p>              
+               </div>
+            </div>
+         </section>
+         <section class="resume-section p-3 p-lg-5 d-flex flex-column" id="requests">
+            <h3 class="mb-5">Requests</h3>
+            <span class="mb-5"><strong>Simple requests (прости заявки)</strong></span>
+            <div class="resume-item d-flex flex-column flex-md-row mb-5">
+               <div class="resume-content mr-auto">
+                  <p>
+                     Когато се изполват прости заявки, ако сървърът поддържа CORS, отговорът на заявката е изпратен обратно, ако не - съобщение за грешка. Пример:
+                  </p>
+                  <div class="centered">
+                     <img src="img/simple-request.png" alt="">
+                  </div>
+                  <p>
+                     <code class="headers-item">Заявка: </code>
+                  <pre>
+                      <code>
+                        GET /myresource/ HTTP/1.1
+                        Host: mydomain.org
+                        (...)
+                        Referer: http://learning.org/example.html
+                        Origin: http://learning.org
+                      </code>
+                    </pre>
+                  </p>
+                  <p>
+                     <code class="headers-item">Отговор: </code>
+                  <pre>
+                        <code>
+                          HTTP/1.1 200 OK
+                          (...)
+                          Access-Control-Allow-Origin: *
+                          Content-Type: application/json
+                            
+                          [JSON Data]
+                        </code>
+                      </pre>
+                  </p>
+               </div>
+            </div>
+            <span class="mb-5"><strong>Preflighted requests</strong></span>
+            <div class="resume-item d-flex flex-column flex-md-row mb-5">
+               <div class="resume-content mr-auto">
+                  <p>
+                     В този случай се сключва "споразумение" между клиентското приложение и сървъра. То се състои от две фази:
+                     Първо browser-а изпълнява <code>OPTIONS</code> завка с същия път (url) за да провери дали има права да направи CORS заявката. <code>OPTIONS</code> зявката 
+                     връща header-и, които определят дали това е възможно и ако да browser-а изпълнява същинската заявка.
+                  </p>
+                  <div class="centered">
+                     <img src="img/preflighted-request.png" alt="">
+                  </div>
+                  <p>
+                     <code class="headers-item">Заявка OPTIONS: </code>
+                  <pre>
+                        <code>
+                            OPTION /myresource/ HTTP/1.1
+                            Host: mydomain.org
+                            (...)
+                            Origin: http://learning.org
+                            Access-Control-Request-Method: POST
+                            Access-Control-Request-Headers: content-type,accept
+                        </code>
+                      </pre>
+                  </p>
+                  <p>
+                     <code class="headers-item">Отговор на OPTIONS заявката: </code>
+                  <pre>
+                          <code>
+                            HTTP/1.1 200 OK
+                            (...)
+                            Access-Control-Allow-Origin: http://learning.org
+                            Access-Control-Allow-Methods: POST, GET, OPTIONS
+                            Access-Control-Allow-Headers: content-type,accept
+                            Access-Control-Max-Age: 1728000
+                          </code>
+                        </pre>
+                  </p>
+                  <p>
+                     <code class="headers-item">След като OPTIONS заявката е успешна, следва същинската заявка: </code>
+                  <pre>
+                            <code>
+                              POST /myresource/ HTTP/1.1
+                              Host: mydomain.org
+                              Content-type: application/json
+                              Accept: application/json
+                              (...)
+                              Referer: http://learning.org/example.html
+                              Origin: http://learning.org
+                                
+                              [JSON Data]
+                            </code>
+                          </pre>
+                  </p>
+                  <p>
+                     <code class="headers-item">И нейният отговор: </code>
+                  <pre>
+                              <code>
+                                HTTP/1.1 200 OK
+                                (...)
+                                Access-Control-Allow-Origin: *
+                                Content-Type: application/json
+                                  
+                                [JSON Data]
+                              </code>
+                            </pre>
+                  </p>    
+                  <p>Този процес е напълно невидим за потребителя, но можем да наблюдаваме как се случва използвайки <code>Network</code> панела от
+                     инструментите за разработчици в browser-ите (Chrome DevTools в Google Chrome например). 
+               </div>
+            </div>
+         </section>
+         <section class="resume-section p-3 p-lg-5 d-flex flex-column" id="low-level-api">
+            <h3 class="mb-5">Примери</h3>
+            <div class="resume-item d-flex flex-column flex-md-row mb-5">
+               <div class="resume-content mr-auto">
+                  <p>
+                     Нека вземем тази проста заявка за пример:
+                  </p>
+               </div>
+            </div>
+            <pre>
+                <code>
+                    const req = new XMLHttpRequest();
+                        
+                    req.open('GET', 'https://maptestapi.apispark.net/v1/maps/', true);
+                    req.onreadystatechange = function() {
+                        if (req.readyState === 4) {
+                            console.log(req.responseText);
+                        }
+                    };
+                    req.setRequestHeader('Accept', 'application/json');
+                    req.send();
+                </code>
+            </pre>
+            <p>Тя ще изглежда по следния начин в browser-а: </p>
+            <p>
+            <div class="centered">
+               <img src="img/console1.png" alt="">
+            </div>
+            </p>
+            <div class="resume-item d-flex flex-column flex-md-row mb-5">
+               <div class="resume-content mr-auto">
+                  <p>
+                     Preflighted request: 
+                  </p>
+               </div>
+            </div>
+            <pre>
+                <code>
+                    const req = new XMLHttpRequest();
+                    
+                    req.open('PUT', 'https://maptestapi.apispark.net/v1/maps/4', true);
+                    req.onreadystatechange = function() {
+                        if (req.readyState === 4) {
+                            console.log(req.responseText);
+                        }
+                    };
+                    req.setRequestHeader('Content-type', 'application/json');
+                    req.send('{ "id": "4", "name": "Meteorites", "type": "d3js", (…)');
+                </code>
+            </pre>
+            <p>Тя ще изглежда по следния начин в browser-а: </p>
+            <p>
+            <div class="centered">
+               <img src="img/console2.png" alt="">
+            </div>
+            </p>
+            <p>
+               CORS се поддържа native от JS XMLHttpRequest обектът. Не същото обаче важи за старите версии на Internet Explorer (7 и 8 например) - там се използва
+               XDomainRequest заявка.
+            </p>
+            <p>
+               Следователно, ако искаме да изпратим credentials (удостоверение за самоличност) управлявани от browser-a (Access Control), трябва да включим поддръжката на
+               XHR изполвайки withCredentials атрибута. По подразбиране този атрибут е изключен. Това може да направим така:
+            </p>
+            <pre>
+                <code>
+                    const req = new XMLHttpRequest();
+                    (...)
+                    req.withCredentials = true;
+                </code>
+            </pre>
+            <p>
+               <em>Забележка: Ако сами построяваме <code>Authentication</code> header-а, не е нужно да изполваме този атрибут.</em>
+            </p>
+         </section>
+         <section class="resume-section p-3 p-lg-5 d-flex flex-column" id="server">
+            <h3 class="mb-5">CORS - Server side</h3>
+            <div class="resume-item d-flex flex-column flex-md-row mb-5">
+                <p>
+                    Какво можем да заключим - въпреки че целта на CORS  е да направи заявките от браузерите възможни, голяма част от имплементацията всъщност трябва да се направи на самият сървър, като се сложат правилните header-и.
+                </p>
+            </div>
+            <p>
+               Нека вземем за пример <a href="https://nodejs.org/en/">NodeJs</a> и един от най - популярните фреймуърци за писане на сървъри - <a href="https://expressjs.com/">Express.js</a>
+            </p>
+            <p>Първата стъпка е да инсталираме чрез <code>npm</code> пакетът cors. Той ще ни позволи лесно да конфигурираме нашия сървър така че да връща правилните <code>header-и</code>: </p>
+            <pre>
+                <code>
+                  $ npm install cors
+                </code>
+            </pre>
+            <p>Може да използваме следния начин: </p>
+            <pre>
+                <code>
+                  var express = require('express')
+                  , cors = require('cors')
+                  , app = express();
+                  
+                  app.use(cors());
+                  
+                  (...)
+                </code>
+            </pre>
+            <p>или:</p>
+            <pre>
+                <code>
+                  var express = require('express')
+                  , cors = require('cors')
+                  , app = express();
+                  
+                  app.get('/products/:id', cors(), function(req, res, next) {
+                    (...)
+                  });
+                </code>
+            </pre>
+            <p>ако искаме да поддържаме preflight заявки:</p>
+            <pre>
+                <code>
+                  var express = require('express')
+                  , cors = require('cors')
+                  , app = express();
+                  
+                  app.options('*', cors());
+                </code>
+            </pre>
+            <p>или същото, но за определен път (route):</p>
+            <pre>
+                <code>
+                  var express = require('express')
+                  , cors = require('cors')
+                  , app = express();
+                  
+                  app.options('/products/:id', cors());
+                  app.del('/products/:id', cors(), function(req, res, next) {
+                    (...)
+                  });
+                </code>
+            </pre>
+         </section>
+         <section class="resume-section p-3 p-lg-5 d-flex flex-column" id="summary">
+            <div class="my-auto">
+               <h2 class="mb-5">Обобщение</h2>
+               <div class="resume-item d-flex flex-column flex-md-row mb-5">
+                  <div class="resume-content mr-auto">
+                     <p>
+                        Както видяхме, използването на CORS не е чак толкова сложно, но когато нещата се объркат, грешките които получаваме могат да не са толкова лесни и интуитивни за разбиране.
+                        Винаги трябва да имаме едно наум и да следим как сме имплементирали CORS header-ите за да си спестим главоболия.
+                     </p>
+                  </div>
+               </div>
+            </div>
+         </section>
+         <section class="resume-section p-3 p-lg-5 d-flex flex-column" id="outputs">
+            <div class="my-auto">
+               <h2 class="mb-5">Източници</h2>
+               <div class="resume-item d-flex flex-column flex-md-row mb-5">
+                  <div class="resume-content mr-auto">
+                     <p><a href="http://restlet.com/company/blog/2015/12/15/understanding-and-using-cors/">This great article</a></p>
+                     <p><a href="https://www.html5rocks.com/en/tutorials/cors/">HTML5 Rocks CORS tutorial</a></p>
+                  </div>
+               </div>
+            </div>
+         </section>
+      </div>
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/highlight.min.js"></script>
+      <script src="vendor/jquery/jquery.min.js"></script>
+      <script src="vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
+      <!-- Plugin JavaScript -->
+      <script src="vendor/jquery-easing/jquery.easing.min.js"></script>
+      <!-- Custom scripts for this template -->
+      <script src="js/cors.min.js"></script>
+      <script>hljs.initHighlightingOnLoad();</script>
+   </body>
+</html>
